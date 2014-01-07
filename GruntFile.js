@@ -1,5 +1,6 @@
+/*global module:false, require:false*/
 module.exports = function(grunt) {
-    'use strict'
+    'use strict';
     grunt.initConfig({
         pkg: grunt.file.readJSON('package.json'),
         uglify: {
@@ -13,13 +14,21 @@ module.exports = function(grunt) {
         },
         qunit: {
             files: ['tests/core/core.html']
-        }, 
+        },
         shell: {
             ls: {
                 options: {
                     stdout: true
                 },
                 command: ['ls', 'ls -l'].join('&&')
+            }
+        },
+        jshint: {
+            all: {
+                src: [ 'Gruntfile.js', 'src/**/*.js' ],
+                options: {
+                    jshintrc: '.jshintrc'
+                }
             }
         }
     });

@@ -33,6 +33,21 @@
         equal(a.length, 3, 'the length of the array is not changed after a delete.');
     });
 
+    test('void', function() {
+        equal(void function() {}, undefined, 'void is executed for its side effects');
+    });
+
+    test('function declaration statements', function() {
+        equal(f1(), 1, 'function declaration statements (without var) are hoisted along with the function body.');
+        function f1 () { return 1; };
+    });
+
+    test('function definition statements', function() {
+        var f1 = function f1 () { return 1; };
+        equal(f1(), 1, 'function definition statements (with var) are not hoisted.');
+        equal(delete f1, false, 'function definition statements (with var) cannot be deleted.');
+    });
+
     test('create core instance test', function() {
         var core = Sync.Core();
         var result = core.something("dummy");

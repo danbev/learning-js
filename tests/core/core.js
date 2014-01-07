@@ -16,6 +16,23 @@
         equal(++i, 3, '++i is 3. The returned value is the incemented value');
     });
 
+    test('typeof', function() {
+        equal(typeof null, "object", 'typeof null is "object"');
+        equal(typeof undefined, "undefined", 'undefined null is "undefined"');
+        equal(typeof true, "boolean", 'booleans are "boolean"');
+        equal(typeof function() {}, "function", 'functions are "function"');
+        equal(typeof 1, "number", 'typeof int is "number"');
+    });
+
+    test('delete', function() {
+        var s = { x: 1, y: 2};
+        equal(delete s.x, true, 'a property can be deleted');
+        equal(delete s, false, 'a var cannot be deleted');
+        var a = [1, 2, 3];
+        equal(delete a[2], true, 'an array element can be deleted');
+        equal(a.length, 3, 'the length of the array is not changed after a delete.');
+    });
+
     test('create core instance test', function() {
         var core = Sync.Core();
         var result = core.something("dummy");

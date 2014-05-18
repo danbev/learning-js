@@ -13,7 +13,12 @@ module.exports = function(grunt) {
             }
         },
         qunit: {
-            files: ['tests/core/core.html']
+            files: ['tests/core/core.html', 
+                'tests/nulls/null.html', 
+                'tests/booleans/boolean.html', 
+                'tests/strings/strings.html', 
+                'tests/equals/equals.html', 
+                'tests/algorithms/algorithms.html',]
         },
         shell: {
             ls: {

@@ -1,6 +1,4 @@
-function Algorithms () {};
-
-Algorithms.binarySearch = function(arr, key) {
+module.exports.binarySearch = function(arr, key) {
     var low = 0;
     var high = arr.length;
     while (low < high) {
@@ -16,7 +14,7 @@ Algorithms.binarySearch = function(arr, key) {
     return -(low + 1);
 };
 
-Algorithms.insertionSort = function(arr) {
+module.exports.insertionSort = function(arr) {
     var n = arr.length, i, j;
     for (i = 1; i < n; i++) {
         for (j = i; j > 0 && arr[j] < arr[j-1]; j--) {
@@ -28,7 +26,7 @@ Algorithms.insertionSort = function(arr) {
     return arr;
 };
 
-Algorithms.selectionSort = function(arr) {
+module.exports.selectionSort = function(arr) {
     var n = arr.length, i, j, min;
     for (i = 0; i < n; i++) {
         min = i;

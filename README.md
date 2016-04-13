@@ -12,26 +12,15 @@ Install the required plugins before running the build the first time, or after a
 
     npm install
 
-
 To build this project simple execute:
 
     grunt
 
-This will execute the default Grunt task which currently just produces a minified javascript file in the build directory. The default task
-also includes the ```qunit``` task which executes the tests in this project.
-
 ## Testing
-This project uses [qunit](http://qunitjs.com/) for unit tests. The tests are located in the ```tests``` directory.
-All tests can be run from the command line by executing the following command:
 
-    grunt qunit
+    grunt mochaTest
 
-During development simple opening the tests html file. For example, while adding tests to the equals module you'd then open
-```tests/equals/equals.html``` in a browser. This will automatically run the tests that currently exist and they may be rerun
-by using the link next to each test. When you add new tests you can simple refresh the page. 
+### Running a single test:
 
-
-## Development environment
-Any text editor or IDE will do. I've been using VIM with the following plugins which has worked well:
-* [vim-javascript](https://github.com/pangloss/vim-javascript)
+    mocha tests/algorithms/algorithms_test.js
 

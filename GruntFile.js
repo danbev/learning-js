@@ -12,28 +12,12 @@ module.exports = function(grunt) {
                 dest: 'build/core.min.js'
             }
         },
-        qunit: {
-            files: ['tests/core/core.html', 
-                'tests/nulls/null.html', 
-                'tests/booleans/boolean.html', 
-                'tests/strings/strings.html', 
-                'tests/equals/equals.html', 
-                'tests/algorithms/algorithms.html',]
-        },
         shell: {
             ls: {
                 options: {
                     stdout: true
                 },
                 command: ['ls', 'ls -l'].join('&&')
-            }
-        },
-        jshint: {
-            all: {
-                src: [ 'Gruntfile.js', 'src/**/*.js' ],
-                options: {
-                    jshintrc: '.jshintrc'
-                }
             }
         },
         mochaTest: {
@@ -46,9 +30,13 @@ module.exports = function(grunt) {
             },
             src: ['tests/**/*_test.js']
           }
+        },
+        eslint: {
+          target: ['src']
         }
     });
     require('load-grunt-tasks')(grunt);
     grunt.loadNpmTasks('grunt-mocha-test');
-    grunt.registerTask('default', ['mochaTest']);
+    grunt.loadNpmTasks('grunt-eslint');
+    grunt.registerTask('default', ['eslint', 'mochaTest']);
 };

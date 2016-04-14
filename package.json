@@ -4,6 +4,10 @@
   "description": "A simple JavaScript project to aid my learning of JavaScript",
   "version": "0.0.1-dev",
   "keywords": [],
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/danbev/learning-js.git"
+  },
   "scripts": {
     "test": "grunt eslint mochaTest",
     "prestart": "echo 'start simply runs eslint and the unit tests'",

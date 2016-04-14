@@ -24,3 +24,12 @@ To run this project simple execute:
 
     mocha tests/algorithms/algorithms_test.js
 
+
+### Update npm packaged
+See which packages are outdated:
+
+    npm outdated
+
+Update a specific dev dependency:
+
+    npm install grunt-contrib-concat@1.0.0 --save-dev

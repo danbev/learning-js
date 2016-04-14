@@ -12,13 +12,13 @@ Install the required plugins before running the build the first time, or after a
 
     npm install
 
-To build this project simple execute:
+To run this project simple execute:
 
-    grunt
+    npm start
 
 ## Testing
 
-    grunt mochaTest
+    npm test
 
 ### Running a single test:
 

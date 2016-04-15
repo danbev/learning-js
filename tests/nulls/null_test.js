@@ -12,9 +12,21 @@ describe('Null and undefined', function() {
     assert.equal(obj.missing, undefined);
   });
 
+  it('undefined is !== null', function() {
+    assert.ok(undefined !== null);
+  });
+
   it('a missing array element should be undefined', function() {
     var arr = [1, 2, 3];
     assert.equal(arr[4], undefined);
+  });
+
+  it("typeof null should be 'object'", function() {
+    assert.equal(typeof null, 'object');
+  });
+
+  it("typeof undefined should be 'undefined'", function() {
+    assert.equal(typeof undefined, 'undefined');
   });
 
 });

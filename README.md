@@ -33,3 +33,27 @@ See which packages are outdated:
 Update a specific dev dependency:
 
     npm install grunt-contrib-concat@1.0.0 --save-dev
+
+
+## NPM
+Just a few npm commands that might be useful
+
+### list/ls
+Find the dependencies of a package:
+
+    npm ls --depth=0
+
+Without depth you can also see all the transient dependencies.
+
+### docs
+Open the docs for a module:
+
+    npm docs module-name
+
+### edit
+If you need to debug a module you can run edit to open the module in your editor and
+updated it.
+
+    npm edit module-name
+
+

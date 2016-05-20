@@ -5,17 +5,17 @@ describe('Promises', function() {
 
   it('basic successful resolution', function() {
     var promise = basic.doit("success");
-    promise.then(function (message) {
-      assert.equal("success", message);
+    return promise.then(function (message) {
+      assert.equal("resolved", message);
     });
   });
 
   it('basic rejection', function() {
-    var promise = basic.doit("success");
-    promise.then(function (message) {
+    var promise = basic.doit("fail");
+    return promise.then(function (message) {
       assert.equal("should not get here", message);
     }, function(message) {
-      assert.equal("rejected", message);
+      assert.equal(message, "rejected");
     });
   });
 

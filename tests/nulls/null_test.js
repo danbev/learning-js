@@ -30,4 +30,9 @@ describe('Null and undefined', function() {
     assert.equal(typeof undefined, 'undefined');
   });
 
+  it("void should make a value undefined", function() {
+    var arr = [1, 2];
+    assert.equal(void arr, undefined);
+  });
+
 });

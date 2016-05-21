@@ -57,3 +57,35 @@ updated it.
     npm edit module-name
 
 
+### Node Inspector
+```shell
+$ npm install node-inspector -g
+```
+
+```shell
+$ node-debug program.js
+```
+
+#### Vagrant
+If you want to remote debug a virtual VM provisioned by Vagrant.
+
+Find the VM that you want to use:
+
+```shell
+$ VBoxManage list vms
+```
+
+Next, with the VM to running, set it forward port: 
+
+```shell
+$ VBoxManage modifyvm "fhcap_single_1461911505182_31134" --natpf1 "guestnginx,tcp,,5858,,5858"
+$ VBoxManage modifyvm "fhcap_single_1461911505182_31134" --natpf1 "guestnginx,tcp,,8888,,8888"
+```
+
+Now, when you start node-debug use the ```--web-port``` and ```--web-host```  when starting:
+
+```shell
+$ node-debug --web-host=192.168.33.10 --web-port=8888 program.js
+```
+
+

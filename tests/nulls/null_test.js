@@ -22,6 +22,7 @@ describe('Null and undefined', function() {
   });
 
   it("typeof null should be 'object'", function() {
+    // this is actually a bug in JavaScript according to the book "You Don't konw JS: Types and Grammar"
     assert.equal(typeof null, 'object');
   });
 

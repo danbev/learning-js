@@ -74,8 +74,7 @@ Find the VM that you want to use:
 ```shell
 $ VBoxManage list vms
 ```
-
-Next, with the VM to running, set it forward port: 
+Depending on your setup you might need to configure port forwarding:
 
 ```shell
 $ VBoxManage modifyvm "fhcap_single_1461911505182_31134" --natpf1 "guestnginx,tcp,,5858,,5858"

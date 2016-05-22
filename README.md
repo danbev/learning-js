@@ -66,6 +66,18 @@ $ npm install node-inspector -g
 $ node-debug program.js
 ```
 
+If you want to debug a test then you'll have to debug grunt:
+
+```shell
+$ node-inspector
+```
+
+Then start grunt like this:
+
+```shell
+$ node --debug-brk $(which grunt) test
+```
+
 #### Vagrant
 If you want to remote debug a virtual VM provisioned by Vagrant.
 

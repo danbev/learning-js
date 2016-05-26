@@ -47,7 +47,7 @@ describe('Sinon stubs', function() {
     stub.restore();
   });
 
-  it('stub a single method calling second callback using callsArg ', function() {
+  it('stub a single method calling second callback using callsArgWith ', function() {
     var stub = sinon.stub(obj, 'fourth');
     stub.callsArgWith(1, 'bajja');
     obj.fourth(function callback1() {}, function callback2(param) {
@@ -56,12 +56,30 @@ describe('Sinon stubs', function() {
     stub.restore();
   });
 
+  it('callsArgWith ', function() {
+    var stub = sinon.stub();
+    // call the second callback when this stub in invokec
+    stub.callsArgWith(1, 'second callback');
+
+    stub(function callback1() {}, function callback2(param) {
+      assert.equal(param, 'second callback');
+    });
+  });
+
   it('stub a single method calling callback using yields ', function() {
     var stub = sinon.stub(obj, 'fourth');
     stub.yields('bajja');
     obj.fourth(function callback2(param) {
       assert.equal(param, 'bajja');
     });
+    stub.restore();
+  });
+
+  it('stub a returns statement', function() {
+    var stub = sinon.stub(obj, 'first');
+    stub.returns(stub.args);
+    var result = obj.first('bajja');
+    console.log(result);
     stub.restore();
   });
 

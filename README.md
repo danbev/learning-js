@@ -58,45 +58,40 @@ updated it.
 
 
 ### Node Inspector
-```shell
-$ npm install node-inspector -g
-```
 
-```shell
-$ node-debug program.js
-```
+    $ npm install node-inspector -g
+
+
+    $ node-debug program.js
+
 
 If you want to debug a test then you'll have to debug grunt:
 
-```shell
-$ node-inspector
-```
+    $ node-inspector
+
 
 Then start grunt like this:
 
-```shell
-$ node --debug-brk $(which grunt) test
-```
+
+    $ node --debug-brk $(which grunt) test
+
 
 #### Vagrant
 If you want to remote debug a virtual VM provisioned by Vagrant.
 
 Find the VM that you want to use:
 
-```shell
-$ VBoxManage list vms
-```
+    $ VBoxManage list vms
+
 Depending on your setup you might need to configure port forwarding:
 
-```shell
-$ VBoxManage modifyvm "fhcap_single_1461911505182_31134" --natpf1 "guestnginx,tcp,,5858,,5858"
-$ VBoxManage modifyvm "fhcap_single_1461911505182_31134" --natpf1 "guestnginx,tcp,,8888,,8888"
-```
+
+    $ VBoxManage modifyvm "fhcap_single_1461911505182_31134" --natpf1 "guestnginx,tcp,,5858,,5858"
+    $ VBoxManage modifyvm "fhcap_single_1461911505182_31134" --natpf1 "guestnginx,tcp,,8888,,8888"
+
 
 Now, when you start node-debug use the ```--web-port``` and ```--web-host```  when starting:
 
-```shell
-$ node-debug --web-host=192.168.33.10 --web-port=8888 program.js
-```
 
+    $ node-debug --web-host=192.168.33.10 --web-port=8888 program.js
 

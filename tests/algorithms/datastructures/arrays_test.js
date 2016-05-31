@@ -15,6 +15,11 @@ describe('Algorthms datastructures arrays', function() {
       var arr = "one two three".split(" ");
       assert.equal(arr.length, 3);
     });
+    it('create a copy using splice ', function() {
+      var arr = [1, 2, 3];
+      var copy = arr.slice()
+      assert.notStrictEqual(arr, copy);
+    });
   });
   describe('searching', function() {
     it('indexOf', function() {

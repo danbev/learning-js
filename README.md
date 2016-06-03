@@ -75,6 +75,9 @@ Then start grunt like this:
 
     $ node --debug-brk $(which grunt) test
 
+Or you can use the `--debug-brk` flag with mocha:
+
+    $ mocha --debug-brk test
 
 #### Vagrant
 If you want to remote debug a virtual VM provisioned by Vagrant.
@@ -94,4 +97,15 @@ Now, when you start node-debug use the ```--web-port``` and ```--web-host```  wh
 
 
     $ node-debug --web-host=192.168.33.10 --web-port=8888 program.js
+
+I've noticed that there it can be slow sometimes when debugging but adding the `--hidden node_modules` option seems to improve performance.
+
+If you find yourself debugging often you can create an ~/.node-inspectorrc file with your node-inspector configuration:
+
+{
+  "web-port": 8888,
+  "web-host": "192.168.33.10",
+  "debug-port": 5858,
+  "hidden": ["./node_modules"]
+}
 

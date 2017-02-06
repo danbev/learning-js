@@ -79,6 +79,11 @@ Or you can use the `--debug-brk` flag with mocha:
 
     $ mocha --debug-brk test
 
+
+Running tape test using inspetor:
+
+    $ node --inspect --debug-brk ./node_modules/babel-tape-runner/bin/babel-tape-runner tests/iterators/iterator-test.js
+
 #### Vagrant
 If you want to remote debug a virtual VM provisioned by Vagrant.
 
@@ -113,4 +118,6 @@ If you find yourself debugging often you can create an ~/.node-inspectorrc file 
 ### Proxyquire
 Just a note about the @global property available in proxyquire which can be useful to allow for transitive requirements. Also note that this is not a
 good approach to testing. A better approach would be to test the submodules in isolation and then stub the that module instead.
+
+### Ru
 

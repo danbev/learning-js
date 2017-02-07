@@ -24,6 +24,7 @@ test('[iterators] custom', function (t) {
   var next = iterator.next();
   t.equal(next.value, 0, 'first should be 0');
   t.equal(next.done, false, 'done should be false');
+  t.end();
 });
 
 test('[iterators] destructuring', function (t) {

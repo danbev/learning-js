@@ -9,7 +9,7 @@
     "url": "https://github.com/danbev/learning-js.git"
   },
   "scripts": {
-    "test": "babel-tape-runner \"tests/iterators/*.js\" | tap-spec",
+    "test": "babel-tape-runner \"tests/iterators/*.js\" \"tests/promises/*.js\" | tap-spec",
     "prestart": "echo 'start simply runs eslint and the unit tests'",
     "start": "npm test"
   },
@@ -28,8 +28,5 @@
     "sinon": "^1.17.4",
     "tap-spec": "^4.1.1",
     "tape": "^4.6.3"
-  },
-  "dependencies": {
-    "promise": "^7.1.1"
   }
 }

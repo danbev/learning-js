@@ -1,15 +1,17 @@
-var assert = require('assert');
+'use strict';
+
+var test = require('tape');
 var basic = require('../../src/promises/basic');
 
-describe('Promises', function() {
-
-  it('basic successful resolution', function() {
-    var promise = basic.doit("success");
-    return promise.then(function (message) {
-      assert.equal("resolved", message);
-    });
+test('[Promises] successful resolution', function (t) {
+  var promise = basic.doit("success");
+  promise.then(function (message) {
+    t.equals('resolved', message);
+    t.end();
   });
+});
 
+/*
   it('basic rejection', function() {
     var promise = basic.doit("fail");
     return promise.then(function (message) {
@@ -20,3 +22,4 @@ describe('Promises', function() {
   });
 
 });
+*/

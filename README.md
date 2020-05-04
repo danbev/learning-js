@@ -119,5 +119,25 @@ If you find yourself debugging often you can create an ~/.node-inspectorrc file 
 Just a note about the @global property available in proxyquire which can be useful to allow for transitive requirements. Also note that this is not a
 good approach to testing. A better approach would be to test the submodules in isolation and then stub the that module instead.
 
-### Ru
 
+### TypeScript
+Adds a language that that gets compiled to JavaScript and the main feature is
+that it adds types which the compiler can check the usage of.
+
+To create a node project that uses TypeScript:
+```console
+$ npm install -g typescript
+```
+Create the typescript configuration file:
+```console
+$ tsc --init
+message TS6071: Successfully created a tsconfig.json file.
+```
+
+Compile:
+```console
+$ tsc
+```
+The output will be placed in `dist` which is configured in tsconfig.json.
+You can also watch source files for changes and have them compiled using
+the `-w` flag.

@@ -30,6 +30,7 @@
     "tape": "^4.6.3"
   },
   "dependencies": {
-    "acorn": "^8.4.1"
+    "acorn": "^8.4.1",
+    "jsdoc": "^3.6.7"
   }
 }

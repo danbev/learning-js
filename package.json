@@ -28,5 +28,8 @@
     "sinon": "^1.17.4",
     "tap-spec": "^4.1.1",
     "tape": "^4.6.3"
+  },
+  "dependencies": {
+    "acorn": "^8.4.1"
   }
 }

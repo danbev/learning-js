@@ -2,7 +2,7 @@
   "name": "s3",
   "version": "0.0.1-dev",
   "dependencies": {
-    "aws-sdk": "^2.691.0",
+    "aws-sdk": "^2.814.0",
     "save": "^2.4.0",
     "uuid": "^8.1.0"
   }

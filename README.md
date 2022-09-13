@@ -119,3 +119,8 @@ If you find yourself debugging often you can create an ~/.node-inspectorrc file 
 Just a note about the @global property available in proxyquire which can be useful to allow for transitive requirements. Also note that this is not a
 good approach to testing. A better approach would be to test the submodules in isolation and then stub the that module instead.
 
+### Jest
+Run a single test case:
+```console
+$ npm t -- -i test/plugins/support.test.js -t "should return a warning if the package is a native module"
+```

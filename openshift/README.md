@@ -70,3 +70,6 @@ $ oc new-app quay.io/dbevenius/paketo-example-app:latest
 --> Success
     Run 'oc status' to view your app.
 ```
+
+__wip__
+TODO: Figure out how to export a Port in Openshift application.

@@ -7,10 +7,10 @@ app.get('/', (request, response) => {
   response.send(`<!DOCTYPE html>
 <html>
   <head>
-    <title>Powered By Paketo Buildpacks</title>
+    <title>Paketo Buildpacks example</title>
   </head>
   <body>
-    <img style="display: block; margin-left: auto; margin-right: auto; width: 50%;" src="https://paketo.io/images/paketo-logo-full-color.png"></img>
+    Paketo Buildpacks example
   </body>
 </html>`);
 });

@@ -21,7 +21,7 @@ $ sudo chmod 666 /var/run/docker.sock
 Building:
 ```console
 $ cd paketo
-$ pack build paketo-example-app --builder paketobuildpacks/builder:base
+$ pack build paketo-example-app --builder paketobuildpacks/builder:base --docker-host=inherit
 ...
 Saving paketo-example-app...
 *** Images (972109eaea73):
@@ -31,13 +31,18 @@ Adding cache layer 'paketo-buildpacks/node-module-bom:cyclonedx-node-module'
 Adding cache layer 'cache.sbom'
 Successfully built image paketo-example-app
 ```
-
-_wip_
+```console
+$ podman images
+REPOSITORY                            TAG         IMAGE ID      CREATED        SIZE
+...
+docker.io/library/paketo-example-app  latest      3dca7a093c61  42 years ago   207 MB
+```
 
 Running the example:
 ```console
-$ podman run -d -p 8080:8080 -e PORT=8080 paketo-example-app
+$ podman run -d -p 8088:8080 -e PORT=8080 docker.io/library/paketo-example-app
 ```
+We should now be able to access http://localhost:8088
 
 
 

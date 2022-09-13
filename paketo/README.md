@@ -40,7 +40,7 @@ docker.io/library/paketo-example-app  latest      3dca7a093c61  42 years ago   2
 
 Running the example:
 ```console
-$ podman run -d -p 8088:8080 -e PORT=8080 docker.io/library/paketo-example-app
+$ podman run -d -p 8088:8080 -e PORT=8080 library/paketo-example-app
 ```
 We should now be able to access http://localhost:8088
 
@@ -51,7 +51,7 @@ certain labels be added to an image. Custom lables can be added using
 `BP_IMAGE_LABLES` which is a command line options and should contain a a space
 delimited key-value pairs of lables. For example:
 ```console
-$ pack build paketo-example-app \ --builder paketobuildpacks/builder:base \ --docker-host=inherit \ --env 'BP_IMAGE_LABELS=io.openshift.expose-services="8081:http" io.openshift.tags="builder,paketo"'
+$ pack build paketo-example-app \ --builder paketobuildpacks/builder:base \ --docker-host=inherit \ --env 'BP_IMAGE_LABELS=io.openshift.expose-services="8081:http" io.openshift.tags="builder,paketo EXPOSE=8080"'
 ...
 Reusing layer 'process-types'
 Adding label 'io.buildpacks.lifecycle.metadata'

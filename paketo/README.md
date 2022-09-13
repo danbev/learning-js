@@ -45,4 +45,30 @@ $ podman run -d -p 8088:8080 -e PORT=8080 docker.io/library/paketo-example-app
 We should now be able to access http://localhost:8088
 
 
-
+### Adding custom labels
+When deploying to certain cloud environments there can be requirements that
+certain labels be added to an image. Custom lables can be added using
+`BP_IMAGE_LABLES` which is a command line options and should contain a a space
+delimited key-value pairs of lables. For example:
+```console
+$ pack build paketo-example-app \ --builder paketobuildpacks/builder:base \ --docker-host=inherit \ --env 'BP_IMAGE_LABELS=io.openshift.expose-services="8081:http" io.openshift.tags="builder,paketo"'
+...
+Reusing layer 'process-types'
+Adding label 'io.buildpacks.lifecycle.metadata'
+Adding label 'io.buildpacks.build.metadata'
+Adding label 'io.buildpacks.project.metadata'
+Adding label 'io.openshift.expose-services'
+Adding label 'io.openshift.tags'
+Setting default process type 'web'
+Saving paketo-example-app...
+*** Images (598ba9faa718):
+      paketo-example-app
+```
+And we can verify the lables in the built image using `podman inspect`:
+```console
+$ podman inspect 598ba9faa718 | grep openshift
+                    "io.openshift.expose-services": "8080:http",
+                    "io.openshift.tags": "builder,paketo",
+               "io.openshift.expose-services": "8080:http",
+               "io.openshift.tags": "builder,paketo",
+```

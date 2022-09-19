@@ -11,9 +11,7 @@ $ ls -lh node-v18.9.0.tar.gz
 -rw-rw-r--. 1 danielbevenius danielbevenius 79M Sep  8 02:01 node-v18.9.0.tar.gz
 ```
 Notice that this a source distrtibution so it will have to build node which
-takes a while.
-
-
+takes a while. TODO: when does that happen?
 
 The Node binary will be downloaded from [nodejs.org](https://nodejs.org/dist)
 and the urls are specified in `buildpack.toml` in the metadata section:
@@ -278,6 +276,24 @@ ERROR: Please check that you are running against the correct path.
 ERROR: failed to detect: no buildpacks participating
 ERROR: failed to build: executing lifecycle: failed with status code: 20
 ```
+So detection failed for this builder. What does the builder expect the apps
+to have?  
+So one things that can be specified is the Node.js version in a `.nvmrc` file:
+```console
+v18.9.0
+```
+The above example I used does not have such file so lets just create a directory
+with only `.nvmrc` in it and see what happens:
+```console
+$ mkdir danbev-example
+$ echo 'v18.9.0' > danbev-example/.nvmrc
+```
+
+And then re-run the `pack` command:
+```console
+$ .bin/pack -v build paketo-example --path ../learning-js/paketo -b build/buildpackage.cnb 
+```
+
 
 So lets take a closer look at where the installing/building of Node.js is
 being done. We know we are calling a script named `scripts/package.sh` so lets

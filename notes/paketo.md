@@ -430,24 +430,32 @@ Reading buildpack directory item: node.sbom.syft.json
 Reading buildpack directory item: node.toml
 Successfully built image paketo-example
 ```
-So that created an image but I can't see that node was built during this
-process which would have taken more time.
-
 The entry point for this image is `/cnb/lifecycle/launcher`. This program is
 responsible for launching the buildpack.
 
-If I compare this image with a running container image I can see that it does
-have node:
-```console
-cnb@d525aed55011:/workspace$ /layers/paketo-buildpacks_node-engine/node/bin/node --version
-v18.8.0
-```
+So that created an image but I can't see that node was unpacked if I run the
+image. I can see that 
 
 Another way to get detection to work is setting an environment variable
 named `BP_NODE_VERSION`, or a buildpack.yml, or a package.json (with a version
 in it), or an .node-version file.
 
+Example of using `BP_NODE_VERSION`:
+```console
+.bin/pack -v build paketo-example -p integration/testdata/needs_node_and_npm_app/ -b ./build/buildpackage.cnb --env BP_NODE_VERSION=18.9.0 --docker-host=inherit
+```
 
+### RHEL/UBI Node.js version
+For Red Hat Enterprise Linux/Universal Base Image we want to use a Node.js
+versions provded by Red Hat which is a build of Node.js that is supported by
+Red Hat.
+
+Based on my current understanding I think that we need to provide a node-engine
+which instead of installing a binary by untar:ing a binary distribution, it
+would use rpm/dnf instead. If this `ubi-node-engine` replicates what
+`node-engine` does it seems like it would be possible to
+
+### node-engine internals
 So lets take a closer look at where the installing/building of Node.js is
 being done. We know we are calling a script named `scripts/package.sh` so lets
 start there.
@@ -509,7 +517,7 @@ we find:
 $ ls
 bin  buildpack.toml
 ```
-The only differenct between this buildpack.toml and the version in the root
+The only difference between this buildpack.toml and the version in the root
 directory is that a version has been added to the buildpack
 ```toml
 [buildpack]
@@ -547,6 +555,128 @@ A stack is the image used for building/running which can be different. For
 Node.js and UBI where would be a `run-image` which uses UBI for example.
 
 ### Builders
+A builder contains a set of buildpacks, a stack, and a cloud native buildpack
+lifecycle that glues these components together.
+
+Paketo provides a number of builders, for example 
+[paketobuildpacks/builder:full](https://github.com/paketo-buildpacks/full-builder).
+
+This builder specifies a number of buildpacks:
+```toml
+description = "Ubuntu bionic base image with buildpacks for Java, .NET Core, NodeJS, Go, Python, PHP, Ruby, Apache HTTPD, NGINX and Procfile"
+
+[[buildpacks]]
+  uri = "docker://gcr.io/paketo-buildpacks/dotnet-core:0.23.2"
+  version = "0.23.2"
+
+  ...
+
+[[buildpacks]]
+  uri = "docker://gcr.io/paketo-buildpacks/nodejs:0.24.0"
+  version = "0.24.0"
+
+[lifecycle]
+  version = "0.14.2"
+
+[[order]]
+
+  [[order.group]]
+    id = "paketo-buildpacks/ruby"
+    version = "0.16.0"
+
+[[order]]
+
+  [[order.group]]
+    id = "paketo-buildpacks/dotnet-core"
+    version = "0.23.2"
+
+[[order]]
+
+  [[order.group]]
+    id = "paketo-buildpacks/go"
+    version = "3.0.0"
+
+[[order]]
+
+  [[order.group]]
+    id = "paketo-buildpacks/python"
+    version = "2.2.0"
+
+[[order]]
+
+  [[order.group]]
+    id = "paketo-buildpacks/php"
+    version = "1.3.0"
+
+[[order]]
+
+  [[order.group]]
+    id = "paketo-buildpacks/web-servers"
+    version = "0.2.0"
+
+[[order]]
+
+  [[order.group]]
+    id = "paketo-buildpacks/java-native-image"
+    version = "7.31.0"
+
+[[order]]
+
+  [[order.group]]
+    id = "paketo-buildpacks/java"
+    version = "7.3.0"
+
+[[order]]
+
+  [[order.group]]
+    id = "paketo-buildpacks/nodejs"
+    version = "0.24.0"
+
+[[order]]
+
+  [[order.group]]
+    id = "paketo-buildpacks/procfile"
+    version = "5.4.0"
+
+[stack]
+  build-image = "docker.io/paketobuildpacks/build:1.3.90-full-cnb"
+  id = "io.buildpacks.stacks.bionic"
+  run-image = "index.docker.io/paketobuildpacks/run:full-cnb"
+  run-image-mirrors = ["gcr.io/paketo-buildpacks/run:full-cnb"]
+
+```
+Note that these `[[buildpack]]`'s produce an array of tables. Each
+`[[buildpack]]` will be a separate item in this array.
+```json
+"buildpack": [
+  {
+    uri = "docker://gcr.io/paketo-buildpacks/dotnet-core:0.23.2",
+    version = "0.23.2"
+  },
+  {
+    uri = "docker://gcr.io/paketo-buildpacks/nodejs:0.24.0"
+    version = "0.24.0"
+  }
+]
+```
+So when a user uses `pack` with this builder it will run through the buildpacks
+in the order specified by the order array I think. And depending on that the
+`detect` phase detects the specific buildpack is the one that will build
+the application.
+
 When we use the pack command it will run though a number of lifecycle stages.
 One of these stages is the `detect` stage which will try to identify the type
 of source code application it is dealing with.1
+If we take [paketo-buildpacks/nodejs](https://github.com/paketo-buildpacks/nodejs)
+it in turn contains a number of buildpacks. For example it contains
+paketo-buildpacks/node-engine, paketo-buildpacks/npm-install, etc.
+
+So if we wanted to provide an alternative to `paketo-buildpacks/nodejs-engine`
+how would we do that? 
+We saw previously that the engine is identifies using a few different methods
+like the BP_NODE_VERSION, '.nvmrc`, `.node-version`, version in `package.json`.
+We could use a specific version scheme and prefix the version with `rhel/ubi`
+and then have a ubi-node-engine only detect that version. This would require
+the ubi-node-engine to come before the node-engine.
+
+

@@ -445,16 +445,6 @@ Example of using `BP_NODE_VERSION`:
 .bin/pack -v build paketo-example -p integration/testdata/needs_node_and_npm_app/ -b ./build/buildpackage.cnb --env BP_NODE_VERSION=18.9.0 --docker-host=inherit
 ```
 
-### RHEL/UBI Node.js version
-For Red Hat Enterprise Linux/Universal Base Image we want to use a Node.js
-versions provded by Red Hat which is a build of Node.js that is supported by
-Red Hat.
-
-Based on my current understanding I think that we need to provide a node-engine
-which instead of installing a binary by untar:ing a binary distribution, it
-would use rpm/dnf instead. If this `ubi-node-engine` replicates what
-`node-engine` does it seems like it would be possible to
-
 ### node-engine internals
 So lets take a closer look at where the installing/building of Node.js is
 being done. We know we are calling a script named `scripts/package.sh` so lets

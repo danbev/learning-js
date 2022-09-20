@@ -4,17 +4,26 @@
 [github repo](git@github.com:paketo-buildpacks/node-engine.git)
 
 This is a Cloud Native Buildpack (CNB) which provides a Node.js distribution
-from [nodejs.org](https://nodejs.org/dist):
-```console
-$ wget https://nodejs.org/dist/v18.9.0/node-v18.9.0.tar.gz
-$ ls -lh node-v18.9.0.tar.gz 
--rw-rw-r--. 1 danielbevenius danielbevenius 79M Sep  8 02:01 node-v18.9.0.tar.gz
-```
-Notice that this a source distrtibution so it will have to build node which
-takes a while. TODO: when does that happen?
+from build using the sources from [nodejs.org](https://nodejs.org/dist) and
+made available at [https://deps.paketo.io/node](https://deps.paketo.io/node).
 
-The Node binary will be downloaded from [nodejs.org](https://nodejs.org/dist)
-and the urls are specified in `buildpack.toml` in the metadata section:
+```console
+$ wget https://deps.paketo.io/node/node_v18.9.0_linux_x64_bionic_5d7d85f9.tgz
+$ ls -lh node_v18.9.0_linux_x64_bionic_5d7d85f9.tgz 
+-rw-rw-r--. 1 danielbevenius danielbevenius 44M Sep  8 18:34 node_v18.9.0_linux_x64_bionic_5d7d85f9.tgz
+$ ls
+bin  include  lib  LICENSE  share
+$ ls bin/
+corepack  node	npm  npx
+```
+
+The Node binary that will be downloaded from
+[https://deps.paketo.io/node](https://deps.paketo.io/node) unpacked when this
+buildpack is built/installed. 
+
+`buildpack.toml` has a metadata section, and there is an entry for each version
+of Node.js supported. The `uri` element is what specifies the binary
+distribution to be used for each version:
 ```toml
 [metadata]
   include-files = ["bin/build", "bin/detect", "bin/run", "bin/optimize-memory", "buildpack.toml"]
@@ -291,8 +300,152 @@ $ echo 'v18.9.0' > danbev-example/.nvmrc
 
 And then re-run the `pack` command:
 ```console
-$ .bin/pack -v build paketo-example --path ../learning-js/paketo -b build/buildpackage.cnb 
+$ .bin/pack -v build paketo-example --path danbev-example -b ./build/buildpackage.cnb --docker-host=inherit
+Builder paketobuildpacks/builder:base is trusted
+Pulling image index.docker.io/paketobuildpacks/builder:base
+5a758b0d9e24: Already exists 
+eeac5ef924c7: Download complete 
+Selected run image index.docker.io/paketobuildpacks/run:base-cnb
+Pulling image index.docker.io/paketobuildpacks/run:base-cnb
+f2de9738df2c: Download complete 
+Downloading buildpack from URI: file:///home/danielbevenius/work/javascript/node-engine/build/buildpackage.cnb
+Adding buildpack paketo-buildpacks/node-engine version 18.9.0 to builder
+Setting custom order
+Creating builder with the following buildpacks:
+-> paketo-buildpacks/dotnet-core@0.23.2
+...
+-> paketo-buildpacks/node-engine@18.9.0
+Adding buildpack paketo-buildpacks/node-engine@18.9.0 (diffID=sha256:7e7b4fd27ca5d661fec8cc0619d353f9aa9d62e74504a23ce4c7ebc837136ee8)
+Using build cache volume pack-cache-library_paketo-example_latest-14322b19e9fc.build
+Running the creator on OS linux with:
+Container Settings:
+  Args: /cnb/lifecycle/creator -daemon -launch-cache /launch-cache -log-level debug -app /workspace -cache-dir /cache -run-image index.docker.io/paketobuildpacks/run:base-cnb paketo-example
+  System Envs: CNB_PLATFORM_API=0.9
+  Image: pack.local/builder/667061786f77676b7a7a:latest
+  User: root
+  Labels: map[author:pack]
+Host Settings:
+  Binds: pack-cache-library_paketo-example_latest-14322b19e9fc.build:/cache /run/user/1000/podman/podman.sock:/var/run/docker.sock pack-cache-library_paketo-example_latest-14322b19e9fc.launch:/launch-cache pack-layers-rzbhquekig:/layers pack-app-ztzxbbywwd:/workspace
+  Network Mode: 
+Previous image with name "paketo-example" not found
+Analyzing image "f2de9738df2ca06d46c111b2a958271c962ffd3f9fc7864314082c4daa8d9fba"
+===> DETECTING
+======== Results ========
+pass: paketo-buildpacks/node-engine@18.9.0
+Resolving plan... (try #1)
+paketo-buildpacks/node-engine 18.9.0
+===> RESTORING
+Reading buildpack directory: /layers/paketo-buildpacks_node-engine
+Reading buildpack directory: /layers/paketo-buildpacks_node-engine
+===> BUILDING
+Starting build
+Running build for buildpack paketo-buildpacks/node-engine@18.9.0
+Looking up buildpack
+Finding plan
+Running build for buildpack Paketo Buildpack for Node Engine 18.9.0
+Creating plan directory
+Preparing paths
+Running build command
+Paketo Buildpack for Node Engine 18.9.0
+  Resolving Node Engine version
+    Candidate version sources (in priority order):
+      .nvmrc -> "18.9.0"
+
+    Selected Node Engine version (using .nvmrc): 18.9.0
+
+  Executing build process
+    Installing Node Engine 18.9.0
+      Completed in 2.885s
+
+  Generating SBOM for /layers/paketo-buildpacks_node-engine/node
+      Completed in 0s
+
+  Configuring build environment
+    NODE_ENV     -> "production"
+    NODE_HOME    -> "/layers/paketo-buildpacks_node-engine/node"
+    NODE_VERBOSE -> "false"
+    SSL_CERT_DIR -> "$SSL_CERT_DIR:/etc/ssl/certs"
+
+  Configuring launch environment
+    NODE_ENV     -> "production"
+    NODE_HOME    -> "/layers/paketo-buildpacks_node-engine/node"
+    NODE_VERBOSE -> "false"
+    SSL_CERT_DIR -> "$SSL_CERT_DIR:/etc/ssl/certs"
+
+    Writing exec.d/0-optimize-memory
+      Calculates available memory based on container limits at launch time.
+      Made available in the MEMORY_AVAILABLE environment variable.
+
+Processing layers
+Updating environment
+Reading output files
+Updating buildpack processes
+Updating process list
+Finished running build for buildpack paketo-buildpacks/node-engine@18.9.0
+Copying SBOM files
+Creating SBOM files for legacy BOM
+Listing processes
+Finished build
+===> EXPORTING
+Reading buildpack directory: /layers/paketo-buildpacks_node-engine
+Reading buildpack directory item: node.ignore
+Reading buildpack directory item: node.sbom.cdx.json
+Reading buildpack directory item: node.sbom.spdx.json
+Reading buildpack directory item: node.sbom.syft.json
+Reading buildpack directory item: node.toml
+Processing buildpack directory: /layers/paketo-buildpacks_node-engine
+Found SBOM of type launch for at /layers/sbom/launch
+Reusing tarball for layer "launch.sbom" with SHA: sha256:36f9de0748c420980a265697f38f76b0f9ae9b7862d3467b76b638706e637425
+Adding layer 'launch.sbom'
+Layer 'launch.sbom' SHA: sha256:36f9de0748c420980a265697f38f76b0f9ae9b7862d3467b76b638706e637425
+Layer 'slice-1' SHA: sha256:6c608dde37a0cf23f987b2bfd8a6afda136ea3f9c962baf372468b56ece2f8da
+Adding 1/1 app layer(s)
+Reusing tarball for layer "launcher" with SHA: sha256:f6b3eafdc09a5ef55b177f186a53471b6280c69796b8b834de684389ea44ac35
+Adding layer 'launcher'
+Layer 'launcher' SHA: sha256:f6b3eafdc09a5ef55b177f186a53471b6280c69796b8b834de684389ea44ac35
+Reusing tarball for layer "config" with SHA: sha256:8d9966ce9e3bac6d5669efd8f1835ef4bed2abddd0f3edc9fbadba6fd33e3a8a
+Adding layer 'config'
+Layer 'config' SHA: sha256:8d9966ce9e3bac6d5669efd8f1835ef4bed2abddd0f3edc9fbadba6fd33e3a8a
+Adding label 'io.buildpacks.lifecycle.metadata'
+Adding label 'io.buildpacks.build.metadata'
+Adding label 'io.buildpacks.project.metadata'
+Setting CNB_LAYERS_DIR=/layers
+Setting CNB_APP_DIR=/workspace
+Setting CNB_PLATFORM_API=0.9
+Setting CNB_DEPRECATION_MODE=quiet
+Prepending /cnb/process and /cnb/lifecycle to PATH
+Setting WORKDIR: '/workspace'
+no default process type
+Setting ENTRYPOINT: '/cnb/lifecycle/launcher'
+Saving paketo-example...
+*** Images (0cdd52cf8c01):
+      paketo-example
+
+*** Image ID: 0cdd52cf8c0100b2998d81d6951b3d116752de3d094bc252fd188b519eb901bb
+Reading buildpack directory: /layers/paketo-buildpacks_node-engine
+Reading buildpack directory item: node.ignore
+Reading buildpack directory item: node.sbom.cdx.json
+Reading buildpack directory item: node.sbom.spdx.json
+Reading buildpack directory item: node.sbom.syft.json
+Reading buildpack directory item: node.toml
+Successfully built image paketo-example
 ```
+So that created an image but I can't see that node was built during this
+process which would have taken more time.
+
+The entry point for this image is `/cnb/lifecycle/launcher`. This program is
+responsible for launching the buildpack.
+
+If I compare this image with a running container image I can see that it does
+have node:
+```console
+cnb@d525aed55011:/workspace$ /layers/paketo-buildpacks_node-engine/node/bin/node --version
+v18.8.0
+```
+
+Another way to get detection to work is setting an environment variable
+named `BP_NODE_VERSION`, or a buildpack.yml, or a package.json (with a version
+in it), or an .node-version file.
 
 
 So lets take a closer look at where the installing/building of Node.js is

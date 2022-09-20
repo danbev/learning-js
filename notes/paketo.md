@@ -433,8 +433,55 @@ Successfully built image paketo-example
 The entry point for this image is `/cnb/lifecycle/launcher`. This program is
 responsible for launching the buildpack.
 
-So that created an image but I can't see that node was unpacked if I run the
-image. I can see that 
+I'm a little confused at this point. I was expecting image created above to
+have node installed somewhere after looking at the output.
+```console
+$ podman run -ti docker.io/library/paketo-example2 /bin/bash
+cnb@d25fdf412483:/workspace$ ls /layers/paketo-buildpacks_node-engine
+ls: cannot access '/layers/paketo-buildpacks_node-engine': No such file or directory
+```
+I've not been able to find any trace of node or the environment variables
+that were in output above. I'm sure I'm missing something here...
+
+We can use pack inspect:
+```console
+$ pack inspect docker.io/library/paketo-example2
+Inspecting image: docker.io/library/paketo-example2
+
+REMOTE:
+(not present)
+
+LOCAL:
+
+Stack: io.buildpacks.stacks.bionic
+
+Base Image:
+  Reference: f2de9738df2ca06d46c111b2a958271c962ffd3f9fc7864314082c4daa8d9fba
+  Top Layer: sha256:17eb134a3a470d30d456c689e5adeae9e265d06f780d58da37815074535a8fcf
+
+Run Images:
+  index.docker.io/paketobuildpacks/run:base-cnb
+  gcr.io/paketo-buildpacks/run:base-cnb
+
+Buildpacks:
+  ID                                   VERSION        HOMEPAGE
+  paketo-buildpacks/node-engine        18.9.0         https://github.com/paketo-buildpacks/node-engine
+```
+
+So I was able to get this to work by specifying additional buildpacks, namely
+`paketo-buildpacks/npm-install` and  `paketo-buildpacks/node-start`:
+```console
+$ .bin/pack -v --pull-policy=never build paketo-example2 -p ../learning-js/paketo -b ./build/buildpackage.cnb -b paketo-buildpacks/npm-install -b paketo-buildpacks/node-start --docker-host=inherit
+```
+
+```console
+cnb@98190a7360a2:/workspace$ /layers/paketo-buildpacks_node-engine/node/bin/node --version
+v18.9.0
+```
+That is what I was expecting. TODO: take a closer look at the above two
+buildpacks and try to figure out what they do to enable the node-engine.
+
+
 
 Another way to get detection to work is setting an environment variable
 named `BP_NODE_VERSION`, or a buildpack.yml, or a package.json (with a version
@@ -453,7 +500,7 @@ The first things that happens, after the command line options have been parsed
 and checked, is that the shell script function `repo::prepare()` is called. It
 will log to stdout:
 ```console
-reparing repo...
+Preparing repo...
 ```
 It will also remove any existing `build` dir and then create a bin directory
 and the build directory. The environment variables PATH will be updated to

@@ -44,12 +44,12 @@ separate item in this array. For example:
 ```json
 "buildpack": [
   {
-    uri = "docker://gcr.io/paketo-buildpacks/dotnet-core:0.23.2",
-    version = "0.23.2"
+    uri: "docker://gcr.io/paketo-buildpacks/dotnet-core:0.23.2",
+    version: "0.23.2"
   },
   {
-    uri = "docker://gcr.io/paketo-buildpacks/nodejs:0.24.0"
-    version = "0.24.0"
+    uri: "docker://gcr.io/paketo-buildpacks/nodejs:0.24.0"
+    version: "0.24.0"
   }
 ]
 ```

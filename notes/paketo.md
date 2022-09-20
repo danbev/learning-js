@@ -1,7 +1,7 @@
 ## Paketo
 
 ### Buildpack for Node Engine
-[github repo](git@github.com:paketo-buildpacks/node-engine.git)
+[github repo](https://github.com/paketo-buildpacks/node-engine)
 
 This is a Cloud Native Buildpack (CNB) which provides a Node.js distribution
 from build using the sources from [nodejs.org](https://nodejs.org/dist) and

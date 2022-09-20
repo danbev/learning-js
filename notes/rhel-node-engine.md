@@ -84,4 +84,5 @@ go and I'm not sure if that is requirement but worth mentioning.
 If we do the above I think that the stack and the node-engine would be the only
 buildpacks that require modification.
 
-
+See [node-engine buildpack](./paketo.md#buildpack-for-node-engine) for more
+details.

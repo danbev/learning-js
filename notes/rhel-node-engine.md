@@ -6,7 +6,7 @@ Paketo currently allows for packaging Node.js application using it's
 [paketobuildpacks/builder:full](https://github.com/paketo-buildpacks/full-builder).
 
 This builder specifies a number of buildpacks:
-```toml
+```console
 description = "Ubuntu bionic base image with buildpacks for Java, .NET Core, NodeJS, Go, Python, PHP, Ruby, Apache HTTPD, NGINX and Procfile"
 
 [[buildpacks]]
@@ -41,7 +41,7 @@ description = "Ubuntu bionic base image with buildpacks for Java, .NET Core, Nod
 Just a note about the syntax here which is not obvious to me, thesei
 `[[buildpack]]`'s produce an array of tables. Each `[[buildpack]]` will be a
 separate item in this array. For example:
-```json
+```javascript
 "buildpack": [
   {
     uri: "docker://gcr.io/paketo-buildpacks/dotnet-core:0.23.2",

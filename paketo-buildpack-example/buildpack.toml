@@ -9,7 +9,7 @@ api = "0.2"
 
 [metadata]
   [[metadata.dependencies]]
-    uri = "https://nodejs.org/dist/v18.9.8/node-v18.9.8-linux-x64.tar.xz"
+    uri = "https://nodejs.org/dist/v18.9.0/node-v18.9.0-linux-x64.tar.xz"
 
 # The list of stacks that the buildpack itself is compatible with
 [[stacks]]

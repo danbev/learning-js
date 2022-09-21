@@ -2,7 +2,9 @@ package node
 
 import (
 	"fmt"
+	"log"
 	"os"
+	"os/exec"
 	"path/filepath"
 
 	"github.com/paketo-buildpacks/packit/v2"
@@ -18,6 +20,8 @@ func Build() packit.BuildFunc {
 			return packit.BuildResult{}, err
 		}
 
+		// Parse buildpack.toml by creating a struct and struct tags
+		// for the fields which is a BurntSushi toml feature.
 		var anon_struct struct {
 			Metadata struct {
 				Dependencies []struct {
@@ -29,9 +33,75 @@ func Build() packit.BuildFunc {
 		if err != nil {
 			return packit.BuildResult{}, err
 		}
+
+		// Gets the first URI from the parsed structure.
 		uri := anon_struct.Metadata.Dependencies[0].URI
 		fmt.Printf("URI -> %s\n", uri)
 
-		return packit.BuildResult{}, fmt.Errorf("node::Build should always fail")
+		// Get the layer named node which might have been added by
+		// earlier builds, which I think would be another buildpack
+		// which might have added this layer. The returned layer may in
+		// that case have been populated with metadata.
+		nodeLayer, err := context.Layers.Get("node")
+		if err != nil {
+			return packit.BuildResult{}, err
+		}
+
+		// Clear the layer
+		nodeLayer, err = nodeLayer.Reset()
+		if err != nil {
+			return packit.BuildResult{}, err
+		}
+		// Specify that this layer needs to be available during the
+		// launch phase. Without this it will not be avilable (once
+		// we add something to the layer that is.
+		nodeLayer.Launch = true
+
+		fmt.Printf("nodeLayer.name: %s\n", nodeLayer.Name)
+		fmt.Printf("nodeLayer.path: %s\n", nodeLayer.Path)
+
+		downloadDir, err := os.MkdirTemp("", "danbev")
+		if err != nil {
+			return packit.BuildResult{}, err
+		}
+		if _, err := os.Stat(downloadDir); err == nil {
+			fmt.Printf("Directory exists\n");
+		} else {
+			fmt.Printf("Directory does not exist\n");
+		}
+		// This will run when this function returns.
+		defer os.RemoveAll(downloadDir)
+
+		fmt.Printf("node::Build Downloading node tar to directory: %s\n", downloadDir)
+		err = exec.Command("curl",
+			uri,
+			"-o", filepath.Join(downloadDir, "/node.tar.xz"),
+		).Run()
+		if err != nil {
+			return packit.BuildResult{}, err
+		}
+
+		fmt.Printf("node::Build Untaring %s\n", filepath.Join(downloadDir, "node.tar.xz"))
+		// This will untar
+		err = exec.Command("tar",
+			"-xf",
+			filepath.Join(downloadDir, "node.tar.xz"),
+			"--strip-components=1",
+			"-C", nodeLayer.Path,
+		).Run()
+
+		if err != nil {
+			fmt.Printf("Could not untar file: %s\n", filepath.Join(downloadDir, "node.tar.xz"))
+			log.Fatal(err)
+			return packit.BuildResult{}, err
+		}
+
+
+		return packit.BuildResult{
+			Plan: context.Plan,
+			Layers: []packit.Layer {
+				nodeLayer,
+			},
+		}, nil
 	}
 }

@@ -1,0 +1,13 @@
+# Indicates compatibility version with lifecycle
+api = "0.2"
+
+# General metadata about the buildpack that is used be the lifecycle
+[buildpack]
+  id = "com.example.node-engine"
+  name = "Node Engine Buildpack"
+  version = "0.0.1"
+
+# The list of stacks that the buildpack itself is compatible with
+[[stacks]]
+  id = "io.buildpacks.stacks.bionic"
+

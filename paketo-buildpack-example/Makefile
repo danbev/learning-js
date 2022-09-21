@@ -2,7 +2,10 @@
 bin/detect: cmd/detect/main.go node/detect.go
 	go build -ldflags="-s -w" -o $@ ./$< 
 
-pack: bin/detect
+bin/build: cmd/build/main.go node/build.go
+	go build -ldflags="-s -w" -o $@ ./$< 
+
+pack: bin/detect bin/build
 	pack build paketo-buildpack-example \
 	--path ../paketo \
 	--buildpack . \

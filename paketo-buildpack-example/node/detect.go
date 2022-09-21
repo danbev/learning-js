@@ -7,6 +7,6 @@ import (
 
 func Detect() packit.DetectFunc {
 	return func(context packit.DetectContext) (packit.DetectResult, error) {
-		return packit.DetectResult{}, fmt.Errorf("always fail")
+		return packit.DetectResult{}, fmt.Errorf("node::Detect. This will always always fail")
 	}
 }

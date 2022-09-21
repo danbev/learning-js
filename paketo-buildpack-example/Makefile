@@ -1,8 +1,7 @@
 
-bin/detect: cmd/detect/main.go
-	go build -ldflags="-s -w" -o $@ ./$<
+bin/detect: cmd/detect/main.go node/detect.go
+	go build -ldflags="-s -w" -o $@ ./$< 
 
-.PHONY: pack
 pack: bin/detect
 	pack build paketo-buildpack-example \
 	--path ../paketo \

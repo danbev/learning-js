@@ -2,7 +2,7 @@ package node
 
 import (
 	"fmt"
-	"github.com/paketo-buildpacks/packit"
+	"github.com/paketo-buildpacks/packit/v2"
 )
 
 func Detect() packit.DetectFunc {

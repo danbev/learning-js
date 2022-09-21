@@ -2,9 +2,10 @@ module paketo-buildpack-example
 
 go 1.19
 
+require github.com/paketo-buildpacks/packit/v2 v2.5.1
+
 require (
-	github.com/BurntSushi/toml v0.4.1 // indirect
+	github.com/BurntSushi/toml v1.2.0 // indirect
 	github.com/Masterminds/semver/v3 v3.1.1 // indirect
-	github.com/paketo-buildpacks/packit v1.3.1 // indirect
-	github.com/pelletier/go-toml v1.9.4 // indirect
+	github.com/pelletier/go-toml v1.9.5 // indirect
 )

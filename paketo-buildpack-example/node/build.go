@@ -56,6 +56,7 @@ func Build() packit.BuildFunc {
 		// launch phase. Without this it will not be avilable (once
 		// we add something to the layer that is.
 		nodeLayer.Launch = true
+		nodeLayer.Cache = true
 
 		fmt.Printf("nodeLayer.name: %s\n", nodeLayer.Name)
 		fmt.Printf("nodeLayer.path: %s\n", nodeLayer.Path)
@@ -96,12 +97,10 @@ func Build() packit.BuildFunc {
 			return packit.BuildResult{}, err
 		}
 
+		fmt.Printf("node::Build All done...\n")
 
 		return packit.BuildResult{
-			Plan: context.Plan,
-			Layers: []packit.Layer {
-				nodeLayer,
-			},
+			Layers: []packit.Layer { nodeLayer, },
 		}, nil
 	}
 }

@@ -1,5 +1,5 @@
 # Indicates compatibility version with lifecycle
-api = "0.2"
+api = "0.8"
 
 # General metadata about the buildpack that is used be the lifecycle
 [buildpack]
@@ -9,6 +9,7 @@ api = "0.2"
 
 [metadata]
   [[metadata.dependencies]]
+    sha256 = "0137e43f5492dd97b6ef1f39ea4581975016e5f1e70db461d7292c6853ace066"
     uri = "https://nodejs.org/dist/v18.9.0/node-v18.9.0-linux-x64.tar.xz"
 
 # The list of stacks that the buildpack itself is compatible with

@@ -56,13 +56,6 @@ func Build() packit.BuildFunc {
 		// launch phase. Without this it will not be avilable (once
 		// we add something to the layer that is.
 		nodeLayer.Launch = true
-		nodeLayer.Cache = true
-		nodeLayer.Build = true
-		/*
-		nodeLayer.Metadata = map[string]interface{} {
-			DepKey: "0137e43f5492dd97b6ef1f39ea4581975016e5f1e70db461d7292c6853ace066",
-		}
-		*/
 
 		fmt.Printf("node::Build nodeLayer.name: %s\n", nodeLayer.Name)
 		fmt.Printf("node::Build nodeLayer.path: %s\n", nodeLayer.Path)
@@ -70,11 +63,6 @@ func Build() packit.BuildFunc {
 		downloadDir, err := os.MkdirTemp("", "danbev")
 		if err != nil {
 			return packit.BuildResult{}, err
-		}
-		if _, err := os.Stat(downloadDir); err == nil {
-			fmt.Printf("node::Build Directory exists\n");
-		} else {
-			fmt.Printf("node;:Build Directory does not exist\n");
 		}
 		// This will run when this function returns.
 		defer os.RemoveAll(downloadDir)

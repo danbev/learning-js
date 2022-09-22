@@ -36,7 +36,7 @@ func Build() packit.BuildFunc {
 
 		// Gets the first URI from the parsed structure.
 		uri := anon_struct.Metadata.Dependencies[0].URI
-		fmt.Printf("URI -> %s\n", uri)
+		fmt.Printf("node::Build URI -> %s\n", uri)
 
 		// Get the layer named node which might have been added by
 		// earlier builds, which I think would be another buildpack
@@ -57,18 +57,24 @@ func Build() packit.BuildFunc {
 		// we add something to the layer that is.
 		nodeLayer.Launch = true
 		nodeLayer.Cache = true
+		nodeLayer.Build = true
+		/*
+		nodeLayer.Metadata = map[string]interface{} {
+			DepKey: "0137e43f5492dd97b6ef1f39ea4581975016e5f1e70db461d7292c6853ace066",
+		}
+		*/
 
-		fmt.Printf("nodeLayer.name: %s\n", nodeLayer.Name)
-		fmt.Printf("nodeLayer.path: %s\n", nodeLayer.Path)
+		fmt.Printf("node::Build nodeLayer.name: %s\n", nodeLayer.Name)
+		fmt.Printf("node::Build nodeLayer.path: %s\n", nodeLayer.Path)
 
 		downloadDir, err := os.MkdirTemp("", "danbev")
 		if err != nil {
 			return packit.BuildResult{}, err
 		}
 		if _, err := os.Stat(downloadDir); err == nil {
-			fmt.Printf("Directory exists\n");
+			fmt.Printf("node::Build Directory exists\n");
 		} else {
-			fmt.Printf("Directory does not exist\n");
+			fmt.Printf("node;:Build Directory does not exist\n");
 		}
 		// This will run when this function returns.
 		defer os.RemoveAll(downloadDir)
@@ -92,7 +98,7 @@ func Build() packit.BuildFunc {
 		).Run()
 
 		if err != nil {
-			fmt.Printf("Could not untar file: %s\n", filepath.Join(downloadDir, "node.tar.xz"))
+			fmt.Printf("node::Build Could not untar file: %s\n", filepath.Join(downloadDir, "node.tar.xz"))
 			log.Fatal(err)
 			return packit.BuildResult{}, err
 		}

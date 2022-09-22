@@ -1,5 +1,5 @@
 ## Paketo Node.js buildpack example
-This example is based on [create-paketo-buildpack)](https://paketo.io/docs/howto/create-paketo-buildpack/)
+This example is based on [create-paketo-buildpack](https://paketo.io/docs/howto/create-paketo-buildpack/)
 and the motivation for creating this was to learn how we might be able to write
 a similar buildpack but one that uses a stack based on Universal Base Image
 ([UBI](https://www.redhat.com/en/blog/introducing-red-hat-universal-base-image)),

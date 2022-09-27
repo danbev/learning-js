@@ -64,12 +64,17 @@ which uses our ubi images. This might also make sense to do if we indend to
 provide other buildpacks for other languages.
 
 The `full-builder` shown above includes a buildpack named `nodejs` which in
-turn includes a number of buildpacks, and on of these is named
+turn includes a number of buildpacks, and one of these is named
 [node-engine](https://github.com/paketo-buildpacks/nodejs/blob/main/buildpack.toml#L27-L29)
 which is the buildpack responsible for installing the Node.js executable
-(including npm).
+(including npm):
+```
+ [[order.group]]
+    id = "paketo-buildpacks/node-engine"
+    version = "0.17.0"
+```
 
-We could replace
+We could replace 
 [packeto-buildpacks/nodejs](https://github.com/paketo-buildpacks/nodejs) with
 a RHEL specific one which would use our own `rhel-node-engine` instead of
 `paketo-buildpacks/node-engine`. It is the `rhel-node-engine` that is what might
@@ -79,20 +84,18 @@ The `node-engine` will detect if `node` is required by the application by
 using a few different methods like the environment variable BP_NODE_VERSION,
 a '.nvmrc` file,  a `.node-version` file, or a `version` field in `package.json.
 
-This is a Cloud Native Buildpack (CNB) provides a Node.js distribution
+`node-engine` is a Cloud Native Buildpack (CNB) provides a Node.js distribution
 built using the sources from [nodejs.org](https://nodejs.org/dist) and
 made available at [https://deps.paketo.io/node](https://deps.paketo.io/node).
 
-The suggestion is that our `rhel-node-engine` be configured with versions and
-to RHEL Node.js versions, and that it uses rpm/dnf to install not in the correct
-layer/places just like `node-engine`. The current `node-engine` is written in
-go and I'm not sure if that is requirement but worth mentioning.
+The suggestion is that our `rhel-node-engine` be configured with RHEL Node.js
+versions, and that it uses `rpm/dnf` to install node in the correct
+layer/places just like `node-engine`.
 
 If we do the above I think that the stack and the node-engine would be the only
-buildpacks that require modification.
+buildpacks that require modification and we would be able to get the other
+buildpack usages for free, like `yarn`, `yarn-install`, `npm-install`, etc.
 
-See [node-engine buildpack](./paketo.md#buildpack-for-node-engine) for more
-details.
 
 ### Questions
 * Can we add our changes to node-engine instead of forking?
@@ -100,3 +103,5 @@ details.
     the stack that is in use? Can there be configuration options specified where
     the buildpack is include, in the builder for example.
 
+See [node-engine buildpack](./paketo.md#buildpack-for-node-engine) for more
+details about how the node-engine works.

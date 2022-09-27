@@ -56,7 +56,8 @@ separate item in this array. For example:
 
 Notice that the above `[stack]` section specifed the `build-image` and the
 `run-image` for the produced image. In our case we would use a `build-image` and
-a `run-image` based on `UBI` instead of `ubuntu bionic`.
+a `run-image` based on `UBI` instead of `ubuntu bionic`. Paketo have 
+[plans](https://blog.paketo.io/posts/2022-roadmap/) for creating UBI images.
 
 
 The `full-builder` shown above includes a buildpack named `nodejs` which in

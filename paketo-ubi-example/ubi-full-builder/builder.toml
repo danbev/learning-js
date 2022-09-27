@@ -1,0 +1,27 @@
+description = "UBI image with buildpacks for NodeJS"
+
+#[[buildpacks]]
+#  uri = "docker://gcr.io/paketo-buildpacks/nodejs:0.24.0"
+#  version = "0.24.0"
+
+[[buildpacks]]
+  uri = "./../ubi-nodejs"
+  version = "0.0.1"
+
+[[buildpacks]]
+  uri = "./../ubi-node-engine"
+  version = "0.0.1"
+
+[lifecycle]
+  version = "0.14.2"
+
+[[order]]
+
+  [[order.group]]
+    id = "ubi-nodejs"
+    version = "0.0.1"
+
+[stack]
+  id = "com.redhat.stacks.ubi"
+  build-image = "localhost/cnbs/ubi-build-image"
+  run-image = "localhost/cnbs/ubi-run-image"

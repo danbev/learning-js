@@ -12,8 +12,8 @@ fmt:
 	go fmt cmd/detect/*.go
 
 pack: bin/detect bin/build
-	env BP_LOG_LEVEL=debug pack build paketo-buildpack-example \
-	--path ../paketo \
+	env BP_LOG_LEVEL=debug pack build ubi-node-engine \
+	--path ../../paketo \
 	--buildpack . \
 	--builder paketobuildpacks/builder:base \
 	--docker-host=inherit \

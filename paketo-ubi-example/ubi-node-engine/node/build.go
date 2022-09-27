@@ -24,6 +24,10 @@ func Build() packit.BuildFunc {
 		if context.Stack == "io.buildpacks.stacks.bionic" {
 			return NodeDistInstall(context, buildpack_toml)
 		}
+		if context.Stack == "com.redhat.stacks.ubi" {
+			return NodeRPMInstall(context, buildpack_toml)
+		}
+
 		return packit.BuildResult{}, fmt.Errorf("Stack %s currently not supported\n", context.Stack)
 	}
 }

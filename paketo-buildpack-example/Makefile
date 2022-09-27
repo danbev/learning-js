@@ -5,6 +5,12 @@ bin/detect: cmd/detect/main.go node/detect.go
 bin/build: cmd/build/main.go node/build.go
 	go build -ldflags="-s -w" -o $@ ./$<
 
+.PHONY: fmt
+fmt:
+	go fmt node/*.go
+	go fmt cmd/build/*.go
+	go fmt cmd/detect/*.go
+
 pack: bin/detect bin/build
 	env BP_LOG_LEVEL=debug pack build paketo-buildpack-example \
 	--path ../paketo \

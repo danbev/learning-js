@@ -60,9 +60,16 @@ a `run-image` based on `ubi` instead of `ubuntu bionic`.
 
 If the only way of specifying a different stack to be used then we might need to
 fork of [paketo-buildpacks](https://github.com/paketo-buildpacks/full-builder)
-which uses our ubi images.
+which uses our ubi images. This might also make sense to do if we indend to
+provide other buildpacks for other languages.
 
-We would then also be able to replace
+The `full-builder` shown above includes a buildpack named `nodejs` which in
+turn includes a number of buildpacks, and on of these is named
+[node-engine](https://github.com/paketo-buildpacks/nodejs/blob/main/buildpack.toml#L27-L29)
+which is the buildpack responsible for installing the Node.js executable
+(including npm).
+
+We could replace
 [packeto-buildpacks/nodejs](https://github.com/paketo-buildpacks/nodejs) with
 a RHEL specific one which would use our own `rhel-node-engine` instead of
 `paketo-buildpacks/node-engine`. It is the `rhel-node-engine` that is what might
@@ -86,3 +93,10 @@ buildpacks that require modification.
 
 See [node-engine buildpack](./paketo.md#buildpack-for-node-engine) for more
 details.
+
+### Questions
+* Can we add our changes to node-engine instead of forking?
+  * How do we choose which installation method should be used, can we we inspect
+    the stack that is in use? Can there be configuration options specified where
+    the buildpack is include, in the builder for example.
+

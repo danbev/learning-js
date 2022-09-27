@@ -9,4 +9,4 @@ build-run:
 
 .PHONY build-build:
 build-build:
-	podman build . -t cnbs/ubi-build-image --target run
+	podman build . -t cnbs/ubi-build-image --target build

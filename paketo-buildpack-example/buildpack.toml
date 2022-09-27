@@ -3,7 +3,7 @@ api = "0.8"
 
 # General metadata about the buildpack that is used be the lifecycle
 [buildpack]
-  id = "paketo-buildpack-example"
+  id = "ubi-node-engine"
   name = "Paketo Example Node Engine Buildpack"
   version = "0.0.1"
 
@@ -13,5 +13,8 @@ api = "0.8"
 
 # The list of stacks that the buildpack itself is compatible with
 [[stacks]]
-  id = "io.buildpacks.stacks.bionic"
+  #id = "io.buildpacks.stacks.bionic"
+  id = "com.redhat.stacks.ubi"
+  build-image = "localhost/cnbs/ubi-build-image"
+  run-image = "localhost/cnbs/ubi-run-image"
 

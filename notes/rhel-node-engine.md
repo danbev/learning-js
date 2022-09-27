@@ -38,7 +38,7 @@ description = "Ubuntu bionic base image with buildpacks for Java, .NET Core, Nod
 
 ```
 
-Just a note about the syntax here which is not obvious to me, thesei
+Just a note about the syntax here which is not obvious to me, these
 `[[buildpack]]`'s produce an array of tables. Each `[[buildpack]]` will be a
 separate item in this array. For example:
 ```javascript
@@ -55,13 +55,9 @@ separate item in this array. For example:
 ```
 
 Notice that the above `[stack]` section specifed the `build-image` and the
-`run-image` for the produces image. In our case we would use a `build-image` and
-a `run-image` based on `ubi` instead of `ubuntu bionic`.
+`run-image` for the produced image. In our case we would use a `build-image` and
+a `run-image` based on `UBI` instead of `ubuntu bionic`.
 
-If the only way of specifying a different stack to be used then we might need to
-fork of [paketo-buildpacks](https://github.com/paketo-buildpacks/full-builder)
-which uses our ubi images. This might also make sense to do if we indend to
-provide other buildpacks for other languages.
 
 The `full-builder` shown above includes a buildpack named `nodejs` which in
 turn includes a number of buildpacks, and one of these is named
@@ -74,16 +70,15 @@ which is the buildpack responsible for installing the Node.js executable
     version = "0.17.0"
 ```
 
-We could replace 
-[packeto-buildpacks/nodejs](https://github.com/paketo-buildpacks/nodejs) with
-a RHEL specific one which would use our own `rhel-node-engine` instead of
-`paketo-buildpacks/node-engine`. It is the `rhel-node-engine` that is what might
-be the outcome of this investigation. 
+Now, we could provider our own builder which is similar to the above
+`full-builder` but replaces that `stack` with `UBI` images, and replaces
+`node.js` with our own buildpack for Node.js which uses `rhel-node-engine`
+instead of `node-engine`.
+
 
 The `node-engine` will detect if `node` is required by the application by
 using a few different methods like the environment variable BP_NODE_VERSION,
 a '.nvmrc` file,  a `.node-version` file, or a `version` field in `package.json.
-
 `node-engine` is a Cloud Native Buildpack (CNB) provides a Node.js distribution
 built using the sources from [nodejs.org](https://nodejs.org/dist) and
 made available at [https://deps.paketo.io/node](https://deps.paketo.io/node).
@@ -96,12 +91,13 @@ If we do the above I think that the stack and the node-engine would be the only
 buildpacks that require modification and we would be able to get the other
 buildpack usages for free, like `yarn`, `yarn-install`, `npm-install`, etc.
 
-
 ### Questions
 * Can we add our changes to node-engine instead of forking?
   * How do we choose which installation method should be used, can we we inspect
     the stack that is in use? Can there be configuration options specified where
-    the buildpack is include, in the builder for example.
-
+    the buildpack is include, in the builder for example. This might be possible
+    to use an build environment variable on the command line using pack (--env)
+    for example.
+    
 See [node-engine buildpack](./paketo.md#buildpack-for-node-engine) for more
 details about how the node-engine works.

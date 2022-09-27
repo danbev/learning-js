@@ -1,8 +1,8 @@
 package main
 
 import (
-	"paketo-buildpack-example/node"
 	"github.com/paketo-buildpacks/packit/v2"
+	"paketo-buildpack-example/node"
 )
 
 func main() {

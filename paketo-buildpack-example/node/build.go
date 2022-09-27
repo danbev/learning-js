@@ -19,6 +19,7 @@ func Build() packit.BuildFunc {
 		if err != nil {
 			return packit.BuildResult{}, err
 		}
+		fmt.Printf("node::Build BuildContext::Stack: %s\n", context.Stack)
 
 		// Parse buildpack.toml by creating a struct and struct tags
 		// for the fields which is a BurntSushi toml feature.

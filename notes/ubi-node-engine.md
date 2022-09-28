@@ -182,6 +182,17 @@ bin  boot  dev	etc  home  lib	lib64  media  mnt  opt	proc  root  run  sbin  srv 
 To get around the above mentioned `permission denied` issue I've remove the
 files cause this. I'm not suggesting this is a fix, only a solution to make
 some progress.
+```console
+$ cd ubi-stack
+$ make build-run build-build
+$ cd ../ubi-full-builder
+$ make pack
+...
+Successfully built image paketo-ubi-example
+
+$ podman run -ti docker.io/library/paketo-ubi-example node --version
+v12.22.12
+```
 
 ### Questions
 * Can we add our changes to node-engine instead of forking?

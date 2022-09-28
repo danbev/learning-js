@@ -13,6 +13,6 @@ $ make pack
 
 ### Running
 ```console
-$ podman run -ti docker.io/library/paketo-buildpack-example node --version
+$ podman run -ti docker.io/library/ubi-node-engine node --version
 v17.9.1
 ```

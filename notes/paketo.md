@@ -1,5 +1,11 @@
 ## Paketo
 
+### Packit
+
+
+### Software Bill of Materials (SBOM)
+https://paketo.io/docs/concepts/sbom/
+
 ### Buildpack for Node Engine
 [github repo](https://github.com/paketo-buildpacks/node-engine)
 
@@ -442,46 +448,52 @@ ls: cannot access '/layers/paketo-buildpacks_node-engine': No such file or direc
 ```
 I've not been able to find any trace of node or the environment variables
 that were in output above. I'm sure I'm missing something here...
-
-We can use pack inspect:
-```console
-$ pack inspect docker.io/library/paketo-example2
-Inspecting image: docker.io/library/paketo-example2
-
-REMOTE:
-(not present)
-
-LOCAL:
-
-Stack: io.buildpacks.stacks.bionic
-
-Base Image:
-  Reference: f2de9738df2ca06d46c111b2a958271c962ffd3f9fc7864314082c4daa8d9fba
-  Top Layer: sha256:17eb134a3a470d30d456c689e5adeae9e265d06f780d58da37815074535a8fcf
-
-Run Images:
-  index.docker.io/paketobuildpacks/run:base-cnb
-  gcr.io/paketo-buildpacks/run:base-cnb
-
-Buildpacks:
-  ID                                   VERSION        HOMEPAGE
-  paketo-buildpacks/node-engine        18.9.0         https://github.com/paketo-buildpacks/node-engine
-```
+This was because there is no `launch` variable set for this layer which means
+that it will not be available when running. If the launch variable is set
+the the layer will be available.
 
 So I was able to get this to work by specifying additional buildpacks, namely
 `paketo-buildpacks/npm-install` and  `paketo-buildpacks/node-start`:
 ```console
 $ .bin/pack -v --pull-policy=never build paketo-example2 -p ../learning-js/paketo -b ./build/buildpackage.cnb -b paketo-buildpacks/npm-install -b paketo-buildpacks/node-start --docker-host=inherit
 ```
+And one of those buildpacks probable set it.
 
 ```console
 cnb@98190a7360a2:/workspace$ /layers/paketo-buildpacks_node-engine/node/bin/node --version
 v18.9.0
 ```
-That is what I was expecting. TODO: take a closer look at the above two
-buildpacks and try to figure out what they do to enable the node-engine.
 
+There is an example in [paketo-ubi-example/ubi-node-engine](../paketo-ubi-example/ubi-node-engine)
+which does set the `launch` variable and can be run using the following command:
+```console
+$ cd paketo-ubi-example
+$ make pack
+...
+Saving paketo-buildpack-example...
+*** Images (67e2ab8f8c76):
+      paketo-buildpack-example
 
+*** Image ID: 67e2ab8f8c7685f48a8397f6d4616ac27b52a188df2ac56ec3bed7d9439a4ef9
+Reading buildpack directory: /layers/paketo-buildpack-example
+Reading buildpack directory item: node
+Reading buildpack directory item: node.toml
+Reusing tarball for layer "paketo-buildpack-example:node" with SHA: sha256:4570cde298fa0e452c553e80aa73177395ab1864aa89face1a84af44e94f1d5a
+Adding cache layer 'paketo-buildpack-example:node'
+Layer 'paketo-buildpack-example:node' SHA: sha256:4570cde298fa0e452c553e80aa73177395ab1864aa89face1a84af44e94f1d5a
+Successfully built image paketo-buildpack-example
+```
+```console
+$ podman run -ti docker.io/library/paketo-buildpack-example node --version
+node: /lib/x86_64-linux-gnu/libc.so.6: version `GLIBC_2.28' not found (required by node
+```
+Node 18 uses a newer version of libc which is not provided by Ubuntu 18. For
+now I'll lower the node version to 17. With that change and re-building using
+`make pack` we can now run the image:
+```console
+$ podman run -ti docker.io/library/paketo-buildpack-example node --version
+v17.9.1
+```
 
 Another way to get detection to work is setting an environment variable
 named `BP_NODE_VERSION`, or a buildpack.yml, or a package.json (with a version

@@ -1,5 +1,5 @@
-## rhel-node-engine
-This document contains note about a task to investigate using RHEL supported
+## ubi-node-engine
+This document contains note about a task to investigate using Red Hat supported
 version of Node.js in combination with Paketo.
 
 Paketo currently allows for packaging Node.js application using it's
@@ -92,6 +92,43 @@ If we do the above I think that the stack and the node-engine would be the only
 buildpacks that require modification and we would be able to get the other
 buildpack usages for free, like `yarn`, `yarn-install`, `npm-install`, etc.
 
+### dnf (Dandified YUM) or rpm (Red Hat Package Manager)
+DNF stands for Dandified YUM is the successor to YUM,  and RPM is Red Hat
+Package Manager. Now, both dnf and rpm are used to install rpm packages. The
+difference is that dnf can automatically identify and install dependencies which
+rpm does not automatically do.
+
+The idea for the ubi-node-engine is to use dnf or rpm to install a Red Hat
+supported version of Node.js. The current Paketo node-engine downloads a Node.js
+distribution and untars into a layer in the resulting images. This does not
+require any special privileges But dnf/rpm do require superuser previledges.
+So how do we install a package into the layer? 
+
+The rpms available can be found [here](https://cdn-ubi.redhat.com/content/public/ubi/dist/ubi8/8/x86_64/appstream/os/Packages/n/)
+, for example:
+```
+https://cdn-ubi.redhat.com/content/public/ubi/dist/ubi8/8/x86_64/appstream/os/Packages/n/nodejs-10.24.0-1.module+el8.3.0+10166+b07ac28e.x86_64.rpm
+https://cdn-ubi.redhat.com/content/public/ubi/dist/ubi8/8/x86_64/appstream/os/Packages/n/nodejs-12.22.12-1.module+el8.6.0+15324+1f2c5d8d.x86_64.rpm
+https://cdn-ubi.redhat.com/content/public/ubi/dist/ubi8/8/x86_64/appstream/os/Packages/n/nodejs-14.20.0-2.module+el8.6.0+16231+7c1b33d9.x86_64.rpm
+```
+One idea was that perhaps we could install this to a new location but these
+packages are not relocatable:
+```console
+[root@cf951d2ec253 cnb]# rpm -i --prefix=/home/cnb/node/ https://cdn-ubi.redhat.com/content/public/ubi/dist/ubi8/8/x86_64/appstream/os/Packages/n/nodejs-14.20.0-2.module+el8.6.0+16231+7c1b33d9.x86_64.rpm
+error: package nodejs is not relocatable
+```
+```console
+[root@cf951d2ec253 cnb]# rpm -q https://cdn-ubi.redhat.com/content/public/ubi/dist/ubi8/8/x86_64/appstream/os/Packages/n/nodejs-14.20.0-2.module+el8.6.0+16231+7c1b33d9.x86_64.rpm
+nodejs-14.20.0-2.module+el8.6.0+16231+7c1b33d9.x86_64
+```
+
+Perhaps we could install node using something like this:
+```console
+[cnb@4e1a25289f5f ~]$ sudo dnf install --installroot=/layer/ubi-node-engine -y https://cdn-ubi.redhat.com/content/public/ubi/dist/ubi8/8/x86_64/appstream/os/Packages/n/nodejs-12.22.12-1.module+el8.6.0+15324+1f2c5d8d.x86_64.rpm
+[cnb@84e06d908032 /]$ /layer/ubi-node-engine/bin/node --version
+v12.22.12
+```
+
 ### Questions
 * Can we add our changes to node-engine instead of forking?
   * How do we choose which installation method should be used, can we we inspect
@@ -99,6 +136,7 @@ buildpack usages for free, like `yarn`, `yarn-install`, `npm-install`, etc.
     the buildpack is include, in the builder for example. This might be possible
     to use an build environment variable on the command line using pack (--env)
     for example.
+
     
 See [node-engine buildpack](./paketo.md#buildpack-for-node-engine) for more
 details about how the node-engine works.

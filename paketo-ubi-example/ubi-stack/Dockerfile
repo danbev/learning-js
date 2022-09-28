@@ -20,8 +20,7 @@ RUN usermod -aG wheel cnb
 FROM base as run
 
 #Set user and group (as declared in base image)
-#USER ${CNB_USER_ID}:${CNB_GROUP_ID}
-USER root
+USER ${CNB_USER_ID}:${CNB_GROUP_ID}
 
 
 FROM base as build
@@ -30,5 +29,4 @@ FROM base as build
 # TODO: not sure what might be needed here yet.
 
 # Set user and group (as declared in base image)
-#USER ${CNB_USER_ID}:${CNB_GROUP_ID}
-USER root
+USER ${CNB_USER_ID}:${CNB_GROUP_ID}

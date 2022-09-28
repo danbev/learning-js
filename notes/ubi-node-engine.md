@@ -128,6 +128,60 @@ Perhaps we could install node using something like this:
 [cnb@84e06d908032 /]$ /layer/ubi-node-engine/bin/node --version
 v12.22.12
 ```
+Trying this out with the [paketo-ubi-example](../paketo-ubi-example) I get
+the following result:
+```console
+Finished build
+===> EXPORTING
+Reading buildpack directory: /layers/ubi-node-engine
+Reading buildpack directory item: node
+Reading buildpack directory item: node.toml
+Processing buildpack directory: /layers/ubi-node-engine
+Processing launch layer: /layers/ubi-node-engine/node
+ERROR: failed to export: creating layer: open /layers/ubi-node-engine/node/etc/gshadow: permission denied
+ERROR: failed to build: executing lifecycle: failed with status code: 62
+make: *** [Makefile:12: pack] Error 1
+```
+The installation of the rpm succeeds and the installed in
+`layers/ubi-node-engine/node`. 
+
+If we list the files that are part of one of the rpms we get:
+```console
+$ podman --help run -ti  --user cnb localhost/cnbs/ubi-build-image:latest /bin/bash
+[cnb@9c4140eb545c /]$ dnf repoquery -l https://cdn-ubi.redhat.com/content/public/ubi/dist/ubi8/8/x86_64/appstream/os/Packages/n/nodejs-14.20.0-2.module+el8.6.0+16231+7c1b33d9.x86_64.rpm
+nodejs-14.20.0-2.module+el8.6.0+16231+7c1b33d9.x86_64.rpm                                                                      27 MB/s |  11 MB     00:00    
+
+/usr/bin/node
+/usr/lib/.build-id
+/usr/lib/.build-id/af
+/usr/lib/.build-id/af/80a0e8679c6ab7eef13df240f92b519b92884e
+/usr/lib/node_modules
+/usr/lib/rpm/fileattrs/nodejs_native.attr
+/usr/lib/rpm/nodejs_native.req
+/usr/share/doc/nodejs
+/usr/share/doc/nodejs/AUTHORS
+/usr/share/doc/nodejs/CHANGELOG.md
+/usr/share/doc/nodejs/GOVERNANCE.md
+/usr/share/doc/nodejs/README.md
+/usr/share/doc/nodejs/onboarding.md
+/usr/share/licenses/nodejs
+/usr/share/licenses/nodejs/LICENSE
+/usr/share/man/man1/node.1.gz
+/usr/share/node
+/usr/share/systemtap
+/usr/share/systemtap/tapset
+/usr/share/systemtap/tapset/node.stp
+```
+But if we inspect the contents under `/layer/ubi-node-engine` there is way
+more than that installed:
+```console
+[cnb@9c4140eb545c ~]$ ls /layer/ubi-node-engine/
+bin  boot  dev	etc  home  lib	lib64  media  mnt  opt	proc  root  run  sbin  srv  sys  tmp  usr  var
+```
+
+To get around the above mentioned `permission denied` issue I've remove the
+files cause this. I'm not suggesting this is a fix, only a solution to make
+some progress.
 
 ### Questions
 * Can we add our changes to node-engine instead of forking?

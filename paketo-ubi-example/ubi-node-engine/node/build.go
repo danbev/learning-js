@@ -69,9 +69,35 @@ func NodeDNFInstall(context packit.BuildContext, buildpack_toml *os.File) (packi
 		return packit.BuildResult{}, fmt.Errorf("Could not install rpm: %s, %s", rpm, cerr)
 	}
 
+	// The following is terrible but should just be a temp thing until we
+	// figure out better way of installing a package using dnf.
+	if err = NodeDNFRemoveFile(nodeLayer.Path, "/etc/gshadow"); err != nil {
+		return packit.BuildResult{}, err
+	}
+	if err = NodeDNFRemoveFile(nodeLayer.Path, "/etc/shadow"); err != nil {
+		return packit.BuildResult{}, err
+	}
+	if err = NodeDNFRemoveFile(nodeLayer.Path, "/root"); err != nil {
+		return packit.BuildResult{}, err
+	}
+	if err = NodeDNFRemoveFile(nodeLayer.Path, "/usr/sbin/build-locale-archive"); err != nil {
+		return packit.BuildResult{}, err
+	}
+	if err = NodeDNFRemoveFile(nodeLayer.Path, "/var/cache/ldconfig"); err != nil {
+		return packit.BuildResult{}, err
+	}
+
 	return packit.BuildResult{
 		Layers: []packit.Layer{nodeLayer},
 	}, nil
+}
+
+func NodeDNFRemoveFile(layer string, path string) (error) {
+	var file = layer + path
+	if err := exec.Command("sudo", "rm", "-rf", file).Run(); err != nil {
+		return fmt.Errorf("Could not remove %s, error: %s", file , err)
+	}
+	return nil
 }
 
 func NodeDistInstall(context packit.BuildContext, buildpack_toml *os.File) (packit.BuildResult, error) {

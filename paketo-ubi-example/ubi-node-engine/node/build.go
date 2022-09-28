@@ -19,21 +19,59 @@ func Build() packit.BuildFunc {
 		if err != nil {
 			return packit.BuildResult{}, err
 		}
-		fmt.Printf("node::Build BuildContext::Stack: %s\n", context.Stack)
+		defer buildpack_toml.Close()
 
+		fmt.Printf("node::Build BuildContext::Stack: %s\n", context.Stack)
 		if context.Stack == "io.buildpacks.stacks.bionic" {
 			return NodeDistInstall(context, buildpack_toml)
 		}
 		if context.Stack == "com.redhat.stacks.ubi" {
-			return NodeRPMInstall(context, buildpack_toml)
+			return NodeDNFInstall(context, buildpack_toml)
 		}
 
 		return packit.BuildResult{}, fmt.Errorf("Stack %s currently not supported\n", context.Stack)
 	}
 }
 
-func NodeRPMInstall(context packit.BuildContext, file *os.File) (packit.BuildResult, error) {
-	return packit.BuildResult{}, fmt.Errorf("RPM install in-progress...")
+func NodeDNFInstall(context packit.BuildContext, buildpack_toml *os.File) (packit.BuildResult, error) {
+	var anon_struct struct {
+		Metadata struct {
+			Dependencies []struct {
+				RPM string `toml:"rpm"`
+			} `toml:"dependencies"`
+		} `toml:"ubi-metadata"`
+	}
+	_, err := toml.DecodeReader(buildpack_toml, &anon_struct)
+	if err != nil {
+		return packit.BuildResult{}, err
+	}
+	rpm := anon_struct.Metadata.Dependencies[0].RPM
+	fmt.Printf("node::Build (UBI) rpm -> %s\n", rpm)
+
+	nodeLayer, err := context.Layers.Get("node")
+	if err != nil {
+		return packit.BuildResult{}, err
+	}
+
+	// Clear the layer
+	nodeLayer, err = nodeLayer.Reset()
+	if err != nil {
+		return packit.BuildResult{}, err
+	}
+
+	nodeLayer.Launch = true
+
+	_, cerr := exec.Command("sudo", "dnf", "install", "--installroot", nodeLayer.Path, "-y", rpm).Output()
+	//log.Printf("out: %s\n", string(out))
+	if cerr != nil {
+		log.Printf("dnf output: %T", cerr)
+		log.Println(cerr)
+		return packit.BuildResult{}, fmt.Errorf("Could not install rpm: %s, %s", rpm, cerr)
+	}
+
+	return packit.BuildResult{
+		Layers: []packit.Layer{nodeLayer},
+	}, nil
 }
 
 func NodeDistInstall(context packit.BuildContext, buildpack_toml *os.File) (packit.BuildResult, error) {

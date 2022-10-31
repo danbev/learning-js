@@ -44,6 +44,11 @@ $ podman run -p 8088:8080 -e PORT=8080 library/paketo-example-app
 ```
 We should now be able to access http://localhost:8088
 
+Check the node version:
+```console
+$ podman run -ti -p 8088:8080 -e PORT=8080 --entrypoint /layers/paketo-buildpacks_node-engine/node/bin/node library/paketo-example-app --version
+v18.11.0
+```
 
 ### Adding custom labels
 When deploying to certain cloud environments there can be requirements that

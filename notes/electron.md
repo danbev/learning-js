@@ -3,11 +3,40 @@ This document is mainly about debugging electron using gdb.
 
 
 ### Building electron
+Electron has a [build tool](https://github.com/electron/build-tools) which can
+be used to build electron.
+```console
+$ cd ~/work/javascript
+$ npm install --global yarn
+$ npm i -g @electron/build-tools
+$ e init --root=./new-electron --bootstrap testing
+```
+This command failed for me after awhile which I think is due to gclient sync
+and happeded to me with the manual build as well. I was able to get it to
+continue using:
+```console
+$ e sync
+```
+After that we can build:
+```console
+$ e d rbe login
+$ e build
+```
+And this can then be started in a debugger using:
+```console
+$ e debug
+```
+
+### Building electron manully
+The following section contains my first attempt to building electron and it
+worked but I was not able to get a debug build to work so I resorted to using
+the build-tool that Electron provides (see above).
+
 Electron requires [depot-tools] and make sure that the depot-tools is in the
 front of your PATH or you'll get an error when trying to build electron with
 GN (Generate Ninja):
 ```console
-$ export PATH=~/work/javascript/depot_tools/:$PATH
+$ export PATH=~/work/javascript/depot_tools:$PATH
 ```
 
 Install Generate Ninja (GN)
@@ -25,11 +54,17 @@ eventually it worked.
 
 After that we have to set an environment variable:
 ```console
-$ export CHROMIUM_BUILDTOOLS_PATH=/home/danbev/work/javascript/electron-js/electron/src/buildtools
+$ export CHROMIUM_BUILDTOOLS_PATH=/home/danbev/work/javascript/electron/electron-js/src/buildtools
 ```
+
+Building should be done from the following directory:
+```console
+$ cd /home/danbev/work/javascript/electron/electron-js/src
+```
+
+
 If we don't do that we'll get the following error:
 ```console
-$ cd src
 $ gn gen out/Testing --args="import(\"//electron/build/args/testing.gn\")"
 ERROR at //build/nocompile.gni:153:9: Invalid substitution type.
         args += [
@@ -73,6 +108,13 @@ There is also an interactive interpreter:
 $ ./out/Testing/electron -i
 ```
 
+Enable debug symbols
+```console
+$ gn args out/Testing
+```
+is_debug = true
+```
+
 ### Using different versions of Electron
 If we need to use an older version of Electron and want to build for that we
 have to configure the repository as follows:
@@ -97,8 +139,16 @@ $ gn gen out/Testing --args="import(\"//electron/build/args/testing.gn\")"
 
 
 ### Debugging Electron using GDB
-TODO:
+After building electron using the "Testing" configuration we can start it using
+```console
+$ pushd out/Testing
+$ gdb --args ./electron --help
+```
 
+`content/app/content_main_runner_impl.cc`:
+```c++
+exit_code = content_main_runner->Run();
+```
 
 
 [depot-tools] : https://commondatastorage.googleapis.com/chrome-infra-docs/flat/depot_tools/docs/html/depot_tools_tutorial.html#_setting_up
